@@ -3,32 +3,20 @@
 210020036 - Rishabh Pomaje
 Program that toggles the red LED when the switch is pressed via the GPIO interrupt.
 */
-//#define STCTRL *((volatile long *) 0xE000E010)          // control and status
-//#define STRELOAD *((volatile long *) 0xE000E014)        // reload value
-//#define STCURRENT *((volatile long *) 0xE000E018)       // current value
-//
-//#define COUNT_FLAG  (1 << 16)                           // bit 16 of CSR automatically set to 1
-//#define ENABLE      (1 << 0)                            // bit 0 of CSR to enable the timer
-//#define INTEN       (1 << 1)                            // bit 1 of CSR to enable the interrupt to the NVIC
-//#define CLKSRC      (1 << 2)                            // bit 2 of CSR to specify CPU clock
-//#define CLOCK_HZ    16000000                            // Timer clock frequency
-
 #include <stdint.h>
 #include <stdbool.h>
 #include "tm4c123gh6pm.h"
 
 void GPIO( void );
 void PORT_F_init( void );
-//void PORT_E_init( void );
-//void GPIO_SETUP( void );
+void GPIOF_SETUP( void );
 
 int main ( void )
 {
     PORT_F_init();
-//    GPIO_SETUP();
-    // Enable Interrupt Number 30 in NVIC
+    GPIOF_SETUP();
     while(1){
-        ;
+        ; // The Interrupts manage everything here
     }
 }
 
@@ -41,7 +29,10 @@ void PORT_F_init( void )
     GPIO_PORTF_DIR_R = 0x0E ;           // Set PORTF4 pin as input user switch pin
     GPIO_PORTF_PUR_R = 0x11 ;
     GPIO_PORTF_DATA_R = 0x00 ;
+}
 
+void GPIOF_SETUP( void )
+{
     // PORT F = ...|SW1|G|B|R|SW2|
     GPIO_PORTF_IS_R = 0x00 ;// Interrupt sense register :: Used to set whether interrupt is level/ edge sensitive.
     // 1 == Level detection
@@ -57,26 +48,8 @@ void PORT_F_init( void )
     NVIC_EN0_R |=  (1 << 30) ; // Enable interrupt for GPIO Port F
 }
 
-void PORT_E_init( void )
-{
-    SYSCTL_RCGC2_R |= 0x00000010;      // Enable clock to PORT_E
-    GPIO_PORTE_LOCK_R = 0x4C4F434B;    // Unlock commit register
-    GPIO_PORTE_CR_R = 0x01;            // Make PORT_E0 configurable
-    GPIO_PORTE_DEN_R = 0x01;           // Set PE0 pin as digital
-    GPIO_PORTE_DIR_R = 0x01;           // Set PE0 pin as output
-}
-
-void GPIO( void )
+void GPIO_ISR( void )
 {
     GPIO_PORTF_ICR_R = 0x11 ;
     GPIO_PORTF_DATA_R ^= 0x04 ;
-//    int counter = 0 ;
-//    for(counter=0; counter<160000; counter++){
-//        ;
-//    }
-
 }
-
-//void GPIO_SETUP( void ){
-//
-//}
