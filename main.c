@@ -18,6 +18,7 @@ int main ( void )
     GPIOF_SETUP();
     while(1){
         ; // The GPIO PORT F interrupts manage everything here.
+        // Test change by Ganesh
     }
 }
 
