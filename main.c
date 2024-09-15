@@ -56,7 +56,7 @@ void GPIOF_SETUP( void )
 void GPIOF_ISR( void )
 {
     // PORT F = ...|SW1|G|B|R|SW2|
-    GPIO_PORTF_DATA_R ^= 0x04 ;
+    GPIO_PORTF_DATA_R ^= 0x02 ;
     GPIO_PORTF_ICR_R = 0x11 ;
     int counter = 10000 ;
     while(counter > 0){
