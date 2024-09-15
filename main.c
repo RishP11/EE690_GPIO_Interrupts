@@ -14,11 +14,13 @@ void GPIOF_ISR( void );
 
 int main ( void )
 
+
 {
     PORT_F_init();
     GPIOF_SETUP();
     while(1){
         ; // The GPIO PORT F interrupts manage everything here.
+        NVIC_EN0_R |=  (1 << 30) ;
     }
 }
 
@@ -55,6 +57,8 @@ void GPIOF_SETUP( void )
 
 void GPIOF_ISR( void )
 {
+    // Disable any additional interrupt from GPIO :
+    NVIC_EN0_R &=  ~(1 << 30) ;
     // PORT F = ...|SW1|G|B|R|SW2|
     GPIO_PORTF_DATA_R ^= 0x02 ;
     GPIO_PORTF_ICR_R = 0x11 ;
