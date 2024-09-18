@@ -13,14 +13,15 @@ void GPIOF_SETUP( void );
 void GPIOF_ISR( void );
 
 int main ( void )
-
-
 {
+    // Initialize the port F
     PORT_F_init();
+    // Configure the GPIO interrupts for Port F
     GPIOF_SETUP();
     while(1){
-        ; // The GPIO PORT F interrupts manage everything here.
+        // Enable the interrupts
         NVIC_EN0_R |=  (1 << 30) ;
+        // The GPIO PORT F interrupts manage everything here.
     }
 }
 
@@ -38,17 +39,16 @@ void PORT_F_init( void )
 void GPIOF_SETUP( void )
 {
     // PORT F = ...|SW1|G|B|R|SW2|
-    // Interrupt sense register :: Used to configure whether interrupt is level/ edge sensitive.
+    // Interrupt sense register :: Configure whether interrupt is level/ edge sensitive.
     // 1 => Level detection and 0 => Edge detection
     GPIO_PORTF_IS_R = 0x00 ;
-    // Interrupt Event Register :: Used to configure whether event to be detected is high/low or rising/falling.
+    // Interrupt Event Register :: Configure whether event to be detected is high/low or rising/falling.
     // 1 => Rising Edge/ High and 0 => Falling Edge/ Low
     GPIO_PORTF_IEV_R = 0x00 ;
-    // Interrupt Both Edges Register :: Used to configure whether both edges are to be detected as events for interrupt.
+    // Interrupt Both Edges Register :: Configure whether both edges are to be detected as events for interrupt.
     GPIO_PORTF_IBE_R = 0x00 ;
-    // Interrupt Mask Register :: To determine whether to allow the interrupt generated to be passed onto interrupt controller or not.
-    // 1 == Send the interrupt
-    // 0 == Do not send the interrupt
+    // Interrupt Mask Register :: Allow the interrupt generated to be passed onto interrupt controller or not.
+    // 1 => Send the interrupt and 0 => Do not send the interrupt
     GPIO_PORTF_IM_R = 0x11 ;
     // Interrupt Clear Register :: Used to clear any pending interrupts
     GPIO_PORTF_ICR_R = 0x11 ;
